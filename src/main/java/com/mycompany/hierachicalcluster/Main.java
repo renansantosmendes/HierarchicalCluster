@@ -14,7 +14,8 @@ import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        String path = "/home/renansantos/NetBeansProjects/VRPDRTGoogleMapsAPI/AlgorithmsResults/9FO/NSGA-II/r050n12tw10k4_2017_12_14";
+        String path = "/home/renansantos/NetBeansProjects/VRPDRTGoogleMapsAPI/"
+                + "AlgorithmsResults/9FO/NSGA-II/r050n12tw10k4_2017_12_14";
         String file = "NSGAII-Population_0.csv";
 
         HierarchicalCluster hc = new HierarchicalCluster(path+"/"+file,3);

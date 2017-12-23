@@ -166,5 +166,19 @@ public class HierarchicalCluster {
         System.out.println("column = " + column);
         System.out.println("row = " + row);
     }
+    
+    public void reduceMatrix(int column1, int column2){
+        int newNumberOfColumns = this.numberOfColumns - 1;
+        double[][] originalData = this.data;
+        double[][] reducedData = new double[newNumberOfColumns][this.numberOfRows];
+        double[] columnData = new double[this.numberOfColumns];
+        
+        for (int i = 0; i < this.numberOfRows; i++) {
+            for (int j = 0; j < this.numberOfColumns; j++) {
+                //this.data[i][j] = listData.get(i).get(j);
+                //reducedData[i][j]
+            }
+        }
+    }
 
 }
