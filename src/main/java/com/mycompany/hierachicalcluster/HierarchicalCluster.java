@@ -71,7 +71,7 @@ public class HierarchicalCluster {
     public double[][] getSimilarity() {
         return similarity;
     }
-    
+
     private List<List<Double>> readData() throws FileNotFoundException, IOException {
         BufferedReader br = new BufferedReader(new FileReader(fileName));
         List<List<Double>> listData = new ArrayList<>();
@@ -105,40 +105,40 @@ public class HierarchicalCluster {
         }
     }
 
-    public void printMatrixData(){
+    public void printMatrixData() {
         for (int j = 0; j < this.numberOfRows; j++) {
             for (int i = 0; i < this.numberOfColumns; i++) {
-                System.out.print(this.data[j][i] + " " );
+                System.out.print(this.data[j][i] + " ");
             }
             System.out.println();
         }
     }
-    
-    public void printSimilarity(){
+
+    public void printSimilarity() {
         for (int j = 0; j < similarity.length; j++) {
             for (int i = 0; i < similarity.length; i++) {
-                System.out.print(this.similarity[j][i] + " " );
+                System.out.print(this.similarity[j][i] + " ");
             }
             System.out.println();
         }
     }
-    
-    public void printDissimilarity(){
+
+    public void printDissimilarity() {
         for (int j = 0; j < dissimilarity.length; j++) {
             for (int i = 0; i < dissimilarity.length; i++) {
-                System.out.print(this.dissimilarity[j][i] + " " );
+                System.out.print(this.dissimilarity[j][i] + " ");
             }
             System.out.println();
         }
     }
-    
+
     private void calculateSilimarity() {
         PearsonsCorrelation corr = new PearsonsCorrelation(this.data);
         System.out.println(corr.getCorrelationMatrix());
         this.similarity = corr.getCorrelationMatrix().getData();
-        
+
     }
-    
+
     private void calculateDissilimarity() {
         dissimilarity = new double[similarity.length][similarity.length];
         for (int j = 0; j < similarity.length; j++) {
@@ -147,6 +147,24 @@ public class HierarchicalCluster {
             }
         }
     }
-    
-    
+
+    public void findMinDissimilarity(int rows, int columns) {
+        double minDissimilarity = 2.0;
+        int column = 0;
+        int row = 0;
+        for (int i = 0; i < columns; i++) {
+            for (int j = 0; j < rows; j++) {
+                if(minDissimilarity > dissimilarity[i][j] && dissimilarity[i][j] != 0){
+                    minDissimilarity = dissimilarity[i][j];
+                    column = i;
+                    row = j;
+                }
+            }
+        }
+        
+        System.out.println("Minumum = " + minDissimilarity);
+        System.out.println("column = " + column);
+        System.out.println("row = " + row);
+    }
+
 }

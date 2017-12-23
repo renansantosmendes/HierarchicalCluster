@@ -19,6 +19,6 @@ public class Main {
 
         HierarchicalCluster hc = new HierarchicalCluster(path+"/"+file,3);
         hc.printDissimilarity();
-        
+        hc.findMinDissimilarity(9, 9);
     }
 }
