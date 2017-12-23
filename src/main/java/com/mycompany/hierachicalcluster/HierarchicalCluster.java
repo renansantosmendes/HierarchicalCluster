@@ -72,11 +72,6 @@ public class HierarchicalCluster {
         return similarity;
     }
     
-    public RealMatrix getRealMatrix(){
-        //RealMatrix matrix = new RealMatrix();
-        return null;
-    }
-
     private List<List<Double>> readData() throws FileNotFoundException, IOException {
         BufferedReader br = new BufferedReader(new FileReader(fileName));
         List<List<Double>> listData = new ArrayList<>();
@@ -152,4 +147,6 @@ public class HierarchicalCluster {
             }
         }
     }
+    
+    
 }
