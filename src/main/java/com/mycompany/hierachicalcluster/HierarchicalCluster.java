@@ -72,6 +72,10 @@ public class HierarchicalCluster {
         return similarity;
     }
 
+    public double[][] getdissimilarity() {
+        return similarity;
+    }
+
     private List<List<Double>> readData() throws FileNotFoundException, IOException {
         BufferedReader br = new BufferedReader(new FileReader(fileName));
         List<List<Double>> listData = new ArrayList<>();
@@ -154,29 +158,34 @@ public class HierarchicalCluster {
         int row = 0;
         for (int i = 0; i < columns; i++) {
             for (int j = 0; j < rows; j++) {
-                if(minDissimilarity > dissimilarity[i][j] && dissimilarity[i][j] != 0){
+                if (minDissimilarity > dissimilarity[i][j] && dissimilarity[i][j] != 0) {
                     minDissimilarity = dissimilarity[i][j];
                     column = i;
                     row = j;
                 }
             }
         }
-        
+
         System.out.println("Minumum = " + minDissimilarity);
         System.out.println("column = " + column);
         System.out.println("row = " + row);
     }
-    
-    public void reduceMatrix(int column1, int column2){
-        int newNumberOfColumns = this.numberOfColumns - 1;
+
+    public void reduceMatrix(int column1, int column2) {
+        int newNumberOfColumns = this.numberOfColumns - 1;//olhar uma forma de atualizar esse número -> pensar num atributo estático
         double[][] originalData = this.data;
         double[][] reducedData = new double[newNumberOfColumns][this.numberOfRows];
         double[] columnData = new double[this.numberOfColumns];
-        
+
         for (int i = 0; i < this.numberOfRows; i++) {
-            for (int j = 0; j < this.numberOfColumns; j++) {
-                //this.data[i][j] = listData.get(i).get(j);
-                //reducedData[i][j]
+            for (int j = 0; j < newNumberOfColumns; j++) {
+                if (j == column1) {
+                    // reducedData[i][j] = this.data[i][column1] + this.data[i][column2];
+                    //System.out.println(this.data[i][column1] + this.data[i][column2]);
+                } else {
+                    //reducedData[i][j] = this.data[i][j];
+                }
+                System.out.println(i + " " + j);
             }
         }
     }

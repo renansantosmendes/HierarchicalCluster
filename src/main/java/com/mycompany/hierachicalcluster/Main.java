@@ -4,6 +4,8 @@
  * and open the template in the editor.
  */
 package com.mycompany.hierachicalcluster;
+import cern.colt.matrix.DoubleMatrix2D;
+import cern.colt.matrix.linalg.Algebra;
 import java.io.IOException;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 
@@ -21,5 +23,11 @@ public class Main {
         HierarchicalCluster hc = new HierarchicalCluster(path+"/"+file,3);
         hc.printDissimilarity();
         hc.findMinDissimilarity(9, 9);
+        hc.reduceMatrix(4, 8);
+        
+        Algebra algebra = new Algebra();
+        //algebra.subMatrix(hc.getdissimilarity(), 0, 0, 0, 0);
+        //algebra.subMatrix(dmd, 0, 0, 0, 0);
+        
     }
 }
