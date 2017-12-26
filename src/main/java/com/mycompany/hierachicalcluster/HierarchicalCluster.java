@@ -110,6 +110,16 @@ public class HierarchicalCluster {
         }
     }
 
+    private double[][] createMatrix(List<List<Double>> list, int rows, int columns) {
+        double[][] matrix = new double[rows][columns];
+        for (int k = 0; k < rows; k++) {
+            for (int i = 0; i < columns; i++) {
+                matrix[k][i] = list.get(k).get(i);
+            }
+        }
+        return matrix;
+    }
+
     public void printMatrixData() {
         for (int j = 0; j < this.numberOfRows; j++) {
             for (int i = 0; i < this.numberOfColumns; i++) {
@@ -139,9 +149,13 @@ public class HierarchicalCluster {
 
     private void calculateSilimarity() {
         PearsonsCorrelation corr = new PearsonsCorrelation(this.data);
-        System.out.println(corr.getCorrelationMatrix());
+        //System.out.println(corr.getCorrelationMatrix());
         this.similarity = corr.getCorrelationMatrix().getData();
 
+    }
+    
+    private double[][] calculateSilimarity(double[][] data) {
+        return new PearsonsCorrelation(data).getCorrelationMatrix().getData();
     }
 
     private void calculateDissilimarity() {
@@ -152,6 +166,15 @@ public class HierarchicalCluster {
             }
         }
     }
+    
+//    private void calculateDissilimarity() {
+//        dissimilarity = new double[similarity.length][similarity.length];
+//        for (int j = 0; j < similarity.length; j++) {
+//            for (int i = 0; i < similarity.length; i++) {
+//                dissimilarity[j][i] = 1 - similarity[j][i];
+//            }
+//        }
+//    }
 
     public void findMinDissimilarity(int rows, int columns) {
         double minDissimilarity = 2.0;
@@ -173,22 +196,54 @@ public class HierarchicalCluster {
     }
 
     public void reduceMatrix(int column1, int column2) {
-        int newNumberOfColumns = this.numberOfColumns - 1;
-        Matrix m = new Matrix(this.data);//focar aqui
+        Matrix m = new Matrix(createMatrix(this.listData, this.listData.size(), this.listData.get(0).size()));
         Matrix reducedData;
-
-        m.print(0, 3);
         int numberOfObjectives = this.numberOfColumns;
+
         reducedData = new Matrix(m.getRowDimension(), m.getColumnDimension() - 1);
         reducedData.setMatrix(0, m.getRowDimension() - 1, 0, column1 - 1, m.getMatrix(0, m.getRowDimension() - 1, 0, column1 - 1));
         reducedData.setMatrix(0, m.getRowDimension() - 1, column1, column1, m.getMatrix(0, m.getRowDimension() - 1, column1, column1)
                 .plus(m.getMatrix(0, m.getRowDimension() - 1, column2, column2)));
         reducedData.setMatrix(0, m.getRowDimension() - 1, column1 + 1, column2 - 1, m.getMatrix(0, m.getRowDimension() - 1, column1 + 1, column2 - 1));
-        reducedData.setMatrix(0, m.getRowDimension() - 1, column2 , m.getColumnDimension() - 2, m.getMatrix(0, m.getRowDimension() - 1, column2 + 1, m.getColumnDimension() - 1));
-        reducedData.print(0, 4);
-        
-        //this.data = new double[m.getRowDimension()][m.getColumnDimension()];// não está atualizando os dados
-        //this.data = m.getArray();
+        reducedData.setMatrix(0, m.getRowDimension() - 1, column2, m.getColumnDimension() - 2, m.getMatrix(0, m.getRowDimension() - 1, column2 + 1, m.getColumnDimension() - 1));
+    }
+
+    public Matrix reduceMatrix(Matrix matrix, int column1, int column2) {
+        Matrix m = matrix;
+        Matrix reducedData;
+        int numberOfObjectives = this.numberOfColumns;
+
+        reducedData = new Matrix(m.getRowDimension(), m.getColumnDimension() - 1);
+        reducedData.setMatrix(0, m.getRowDimension() - 1, 0, column1 - 1, m.getMatrix(0, m.getRowDimension() - 1, 0, column1 - 1));
+        reducedData.setMatrix(0, m.getRowDimension() - 1, column1, column1, m.getMatrix(0, m.getRowDimension() - 1, column1, column1)
+                .plus(m.getMatrix(0, m.getRowDimension() - 1, column2, column2)));
+        reducedData.setMatrix(0, m.getRowDimension() - 1, column1 + 1, column2 - 1, m.getMatrix(0, m.getRowDimension() - 1, column1 + 1, column2 - 1));
+        reducedData.setMatrix(0, m.getRowDimension() - 1, column2, m.getColumnDimension() - 2, m.getMatrix(0, m.getRowDimension() - 1, column2 + 1, m.getColumnDimension() - 1));
+
+        return reducedData;
+    }
+
+    private void copyFrom2DArrayToList(double[][] matrix, List<List<Double>> list, int rows, int columns) {
+        list = new ArrayList<>();
+        for (int j = 0; j < rows; j++) {
+            List<Double> line = new ArrayList<>();
+            for (int i = 0; i < columns; i++) {
+                line.add(matrix[j][i]);
+            }
+            list.add(line);
+        }
+        System.out.println(list);
+    }
+
+    public void reduce() {
+        Matrix m = new Matrix(this.data);
+        int numberOfColumns = this.numberOfColumns;
+        while(numberOfColumns > 1){
+            m = reduceMatrix(m, 0, 1);
+            m.print(0, 4);
+            
+            numberOfColumns--;
+        }
     }
 
 }
