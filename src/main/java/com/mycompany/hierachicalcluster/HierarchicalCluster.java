@@ -153,9 +153,19 @@ public class HierarchicalCluster {
         this.similarity = corr.getCorrelationMatrix().getData();
 
     }
-    
+
     private double[][] calculateSilimarity(double[][] data) {
+        printSquareMatrix(new PearsonsCorrelation(data).getCorrelationMatrix().getData());
         return new PearsonsCorrelation(data).getCorrelationMatrix().getData();
+    }
+    
+    public void printSquareMatrix(double[][] matrix){
+         for (int j = 0; j < matrix.length; j++) {
+            for (int i = 0; i < matrix.length; i++) {
+                System.out.print(matrix[i][j] + " ");
+            }
+            System.out.println();
+        }
     }
 
     private void calculateDissilimarity() {
@@ -166,15 +176,14 @@ public class HierarchicalCluster {
             }
         }
     }
-    
-//    private void calculateDissilimarity() {
-//        dissimilarity = new double[similarity.length][similarity.length];
-//        for (int j = 0; j < similarity.length; j++) {
-//            for (int i = 0; i < similarity.length; i++) {
-//                dissimilarity[j][i] = 1 - similarity[j][i];
-//            }
-//        }
-//    }
+
+    private void copySquareMatrix(double[][] sourceMatrix, double[][] destinationMatrix, int length) {
+        for (int i = 0; i < length - 1; i++) {
+            for (int j = 0; j < length - 1; j++) {
+                destinationMatrix[i][j] = sourceMatrix[i][j];
+            }
+        }
+    }
 
     public void findMinDissimilarity(int rows, int columns) {
         double minDissimilarity = 2.0;
@@ -238,10 +247,11 @@ public class HierarchicalCluster {
     public void reduce() {
         Matrix m = new Matrix(this.data);
         int numberOfColumns = this.numberOfColumns;
-        while(numberOfColumns > 1){
+        while (numberOfColumns > 2) {
             m = reduceMatrix(m, 0, 1);
             m.print(0, 4);
-            
+            copySquareMatrix(this.similarity, calculateSilimarity(m.getArray()), numberOfColumns);
+            //calculateDissilimarity();
             numberOfColumns--;
         }
     }
