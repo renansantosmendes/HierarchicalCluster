@@ -5,9 +5,6 @@
  */
 package com.mycompany.hierachicalcluster;
 
-import Jama.Matrix;
-import cern.colt.matrix.DoubleMatrix2D;
-import cern.colt.matrix.linalg.Algebra;
 import java.io.IOException;
 
 /**

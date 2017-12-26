@@ -1,14 +1,8 @@
 package com.mycompany.hierachicalcluster;
 
 import Jama.Matrix;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import org.apache.commons.math3.linear.RealMatrix;
+import java.io.*;
+import java.util.*;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 
 /*
@@ -34,9 +28,17 @@ public class HierarchicalCluster {
 
     private class Cluster {
 
-        private List<Double> points;
-
-        public List<Double> getPoints() {
+        private List<Integer> points;
+        
+        public Cluster(){
+            points = new ArrayList<>();
+        }
+        
+        public void addPointPosition(int position){
+            points.add(position);
+        }
+        
+        public List<Integer> getPoints() {
             return this.points;
         }
     }
@@ -250,7 +252,6 @@ public class HierarchicalCluster {
             }
             list.add(line);
         }
-        //System.out.println(list);
     }
 
     public void reduce() {
@@ -260,12 +261,10 @@ public class HierarchicalCluster {
             List<Integer> indexes = new ArrayList<>();
             indexes.addAll(findMinDissimilarity(m.getRowDimension(), numberOfColumns));
             m = reduceMatrix(m, indexes.get(0), indexes.get(1));
-            //m.print(0, 4);
             copySquareMatrix(this.similarity, calculateSilimarity(m.getArray()), numberOfColumns);
             calculateDissilimarity();
             
             numberOfColumns--;
-            //printDissimilarity(numberOfColumns);
         }
     }
 
