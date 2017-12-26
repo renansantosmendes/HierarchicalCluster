@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
@@ -146,16 +147,22 @@ public class HierarchicalCluster {
             System.out.println();
         }
     }
+    
+    public void printDissimilarity(int length) {
+        for (int j = 0; j < length; j++) {
+            for (int i = 0; i < length; i++) {
+                System.out.print(this.dissimilarity[j][i] + " ");
+            }
+            System.out.println();
+        }
+    }
 
     private void calculateSilimarity() {
         PearsonsCorrelation corr = new PearsonsCorrelation(this.data);
-        //System.out.println(corr.getCorrelationMatrix());
         this.similarity = corr.getCorrelationMatrix().getData();
-
     }
 
     private double[][] calculateSilimarity(double[][] data) {
-        printSquareMatrix(new PearsonsCorrelation(data).getCorrelationMatrix().getData());
         return new PearsonsCorrelation(data).getCorrelationMatrix().getData();
     }
     
@@ -185,12 +192,13 @@ public class HierarchicalCluster {
         }
     }
 
-    public void findMinDissimilarity(int rows, int columns) {
+    public List<Integer> findMinDissimilarity(int rows, int columns) {
         double minDissimilarity = 2.0;
+        List<Integer> list = new ArrayList<>();
         int column = 0;
         int row = 0;
         for (int i = 0; i < columns; i++) {
-            for (int j = 0; j < rows; j++) {
+            for (int j = 0; j < columns; j++) {
                 if (minDissimilarity > dissimilarity[i][j] && dissimilarity[i][j] != 0) {
                     minDissimilarity = dissimilarity[i][j];
                     column = i;
@@ -198,10 +206,11 @@ public class HierarchicalCluster {
                 }
             }
         }
-
-        System.out.println("Minumum = " + minDissimilarity);
-        System.out.println("column = " + column);
-        System.out.println("row = " + row);
+        list.add(row);
+        list.add(column);
+        list.sort(Comparator.naturalOrder());
+        list.forEach(System.out::println);
+        return list;
     }
 
     public void reduceMatrix(int column1, int column2) {
@@ -241,18 +250,22 @@ public class HierarchicalCluster {
             }
             list.add(line);
         }
-        System.out.println(list);
+        //System.out.println(list);
     }
 
     public void reduce() {
         Matrix m = new Matrix(this.data);
         int numberOfColumns = this.numberOfColumns;
         while (numberOfColumns > 2) {
-            m = reduceMatrix(m, 0, 1);
-            m.print(0, 4);
+            List<Integer> indexes = new ArrayList<>();
+            indexes.addAll(findMinDissimilarity(m.getRowDimension(), numberOfColumns));
+            m = reduceMatrix(m, indexes.get(0), indexes.get(1));
+            //m.print(0, 4);
             copySquareMatrix(this.similarity, calculateSilimarity(m.getArray()), numberOfColumns);
-            //calculateDissilimarity();
+            calculateDissilimarity();
+            
             numberOfColumns--;
+            //printDissimilarity(numberOfColumns);
         }
     }
 
