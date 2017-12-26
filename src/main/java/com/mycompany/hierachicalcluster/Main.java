@@ -24,6 +24,6 @@ public class Main {
         HierarchicalCluster hc = new HierarchicalCluster(path + "/" + file, 3);
         hc.printDissimilarity();
         hc.findMinDissimilarity(9, 9);
-        hc.reduceMatrix(4, 8);
+        hc.reduceMatrix(1, 7);
     }
 }
