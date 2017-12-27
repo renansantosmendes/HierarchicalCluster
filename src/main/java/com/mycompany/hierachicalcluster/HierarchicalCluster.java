@@ -19,7 +19,7 @@ public class HierarchicalCluster {
     private List<List<Double>> listData;
     private double[][] data;
     private String fileName;
-    private int numberOfClusters;
+    private int numberOfClusters = 0;
     private List<Cluster> clusters;
     private double[][] similarity;
     private double[][] dissimilarity;
@@ -29,17 +29,25 @@ public class HierarchicalCluster {
     private class Cluster {
 
         private List<Integer> points;
-        
-        public Cluster(){
+
+        public Cluster() {
             points = new ArrayList<>();
         }
-        
-        public void addPointPosition(int position){
+
+        public void addPointPosition(int position) {
             points.add(position);
         }
-        
+
+        public void addPointPositions(List<Integer> positions) {
+            points.addAll(positions);
+        }
+
         public List<Integer> getPoints() {
             return this.points;
+        }
+
+        public String toString() {
+            return this.points.toString();
         }
     }
 
@@ -149,7 +157,7 @@ public class HierarchicalCluster {
             System.out.println();
         }
     }
-    
+
     public void printDissimilarity(int length) {
         for (int j = 0; j < length; j++) {
             for (int i = 0; i < length; i++) {
@@ -167,9 +175,9 @@ public class HierarchicalCluster {
     private double[][] calculateSilimarity(double[][] data) {
         return new PearsonsCorrelation(data).getCorrelationMatrix().getData();
     }
-    
-    public void printSquareMatrix(double[][] matrix){
-         for (int j = 0; j < matrix.length; j++) {
+
+    public void printSquareMatrix(double[][] matrix) {
+        for (int j = 0; j < matrix.length; j++) {
             for (int i = 0; i < matrix.length; i++) {
                 System.out.print(matrix[i][j] + " ");
             }
@@ -211,7 +219,6 @@ public class HierarchicalCluster {
         list.add(row);
         list.add(column);
         list.sort(Comparator.naturalOrder());
-        list.forEach(System.out::println);
         return list;
     }
 
@@ -257,14 +264,33 @@ public class HierarchicalCluster {
     public void reduce() {
         Matrix m = new Matrix(this.data);
         int numberOfColumns = this.numberOfColumns;
-        while (numberOfColumns > 2) {
+        List<List<Integer>> columns = new ArrayList<>();
+        initializeColumnsForCluster(columns);
+
+        while (numberOfColumns > this.numberOfClusters) {
             List<Integer> indexes = new ArrayList<>();
             indexes.addAll(findMinDissimilarity(m.getRowDimension(), numberOfColumns));
             m = reduceMatrix(m, indexes.get(0), indexes.get(1));
             copySquareMatrix(this.similarity, calculateSilimarity(m.getArray()), numberOfColumns);
             calculateDissilimarity();
-            
+            Cluster cluster = new Cluster();
+            cluster.addPointPositions(indexes);
+            this.clusters.add(cluster);
             numberOfColumns--;
+            columns.get(indexes.get(0)).addAll(columns.get(indexes.get(1)));
+            //if(columns.get(indexes.get(1)).size() == 1){
+                columns.get(indexes.get(1)).clear();
+           // }
+        }
+        System.out.println(columns);
+        clusters.forEach(System.out::println);
+    }
+
+    private void initializeColumnsForCluster(List<List<Integer>> columns) {
+        for (int i = 0; i < this.numberOfColumns; i++) {
+            List<Integer> column = new ArrayList<>();
+            column.add(i);
+            columns.add(column);
         }
     }
 

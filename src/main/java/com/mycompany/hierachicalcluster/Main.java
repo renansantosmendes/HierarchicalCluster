@@ -18,8 +18,7 @@ public class Main {
                 + "AlgorithmsResults/9FO/NSGA-II/r050n12tw10k4_2017_12_14";
         String file = "NSGAII-Population_0.csv";
 
-        HierarchicalCluster hc = new HierarchicalCluster(path + "/" + file, 3);
-        hc.printDissimilarity();
+        HierarchicalCluster hc = new HierarchicalCluster(path + "/" + file, 2);
         hc.reduce();
         
      
