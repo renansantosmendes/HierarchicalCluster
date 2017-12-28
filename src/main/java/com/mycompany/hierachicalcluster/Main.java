@@ -6,6 +6,8 @@
 package com.mycompany.hierachicalcluster;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -20,7 +22,5 @@ public class Main {
 
         HierarchicalCluster hc = new HierarchicalCluster(path + "/" + file, 2);
         hc.reduce();
-        
-     
     }
 }

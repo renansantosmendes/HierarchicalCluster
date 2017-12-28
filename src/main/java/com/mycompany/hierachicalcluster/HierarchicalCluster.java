@@ -102,9 +102,6 @@ public class HierarchicalCluster {
             listData.add(line);
         }
 
-        System.out.println("Number of rows = " + listData.size());
-        System.out.println("Number of columns = " + listData.get(0).size());
-
         this.numberOfRows = listData.size();
         this.numberOfColumns = listData.get(0).size();
         br.close();
@@ -203,12 +200,13 @@ public class HierarchicalCluster {
         }
     }
 
-    private void copySquareMatrix(double[][] sourceMatrix, double[][] destinationMatrix, int length) {
+    private void copySquareMatrix(double[][] destinationMatrix, double[][] sourceMatrix, int length) {
         for (int i = 0; i < length - 1; i++) {
             for (int j = 0; j < length - 1; j++) {
                 destinationMatrix[i][j] = sourceMatrix[i][j];
             }
         }
+        //printSimilarity(length);
     }
 
     public List<Integer> findMinDissimilarity(int rows, int columns) {
@@ -279,14 +277,12 @@ public class HierarchicalCluster {
         while (numberOfColumns > this.numberOfClusters) {
             List<Integer> indexes = new ArrayList<>();
             indexes.addAll(findMinDissimilarity(m.getRowDimension(), numberOfColumns));
-            System.out.println(indexes.get(0) + 1);
-            System.out.println(indexes.get(1) + 1);
-            System.out.println();
             m = reduceMatrix(m, indexes.get(0), indexes.get(1));
+            
             copySquareMatrix(this.similarity, calculateSilimarity(m.getArray()), numberOfColumns);
             calculateDissilimarity();
-            
-            printSimilarity(numberOfColumns);
+            //printSquareMatrix(calculateSilimarity(m.getArray()));
+//            printSimilarity(numberOfColumns-1);
             
             Cluster cluster = new Cluster();
             cluster.addPointPositions(indexes);
@@ -298,9 +294,9 @@ public class HierarchicalCluster {
             columns.remove(index);
 
         }
-        System.out.println(columns);
+//        System.out.println(columns);
         //columns.remove(2);
-        //System.out.println(columns);
+        System.out.println(columns);
 //        clusters.forEach(System.out::println);
     }
 
