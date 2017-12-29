@@ -282,8 +282,8 @@ public class HierarchicalCluster {
             copySquareMatrix(this.similarity, calculateSilimarity(m.getArray()), numberOfColumns);
             calculateDissilimarity();
             //printSquareMatrix(calculateSilimarity(m.getArray()));
-//            printSimilarity(numberOfColumns-1);
-            
+            printDissimilarity(numberOfColumns-1);
+            System.out.println();
             Cluster cluster = new Cluster();
             cluster.addPointPositions(indexes);
             this.clusters.add(cluster);
