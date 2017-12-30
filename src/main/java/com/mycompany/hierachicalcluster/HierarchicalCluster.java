@@ -145,7 +145,7 @@ public class HierarchicalCluster {
             System.out.println();
         }
     }
-    
+
     public void printSimilarity(int length) {
         for (int j = 0; j < length; j++) {
             for (int i = 0; i < length; i++) {
@@ -278,11 +278,11 @@ public class HierarchicalCluster {
             List<Integer> indexes = new ArrayList<>();
             indexes.addAll(findMinDissimilarity(m.getRowDimension(), numberOfColumns));
             m = reduceMatrix(m, indexes.get(0), indexes.get(1));
-            
+
             copySquareMatrix(this.similarity, calculateSilimarity(m.getArray()), numberOfColumns);
             calculateDissilimarity();
             //printSquareMatrix(calculateSilimarity(m.getArray()));
-            printDissimilarity(numberOfColumns-1);
+            printDissimilarity(numberOfColumns - 1);
             System.out.println();
             Cluster cluster = new Cluster();
             cluster.addPointPositions(indexes);
@@ -294,10 +294,10 @@ public class HierarchicalCluster {
             columns.remove(index);
 
         }
-//        System.out.println(columns);
-        //columns.remove(2);
+        columns.forEach(list -> list.sort(Comparator.naturalOrder()));
+        generateBinaryCluster(columns);
         System.out.println(columns);
-//        clusters.forEach(System.out::println);
+        
     }
 
     private void initializeColumnsForCluster(List<List<Integer>> columns) {
@@ -306,6 +306,27 @@ public class HierarchicalCluster {
             column.add(i);
             columns.add(column);
         }
+    }
+    
+    private List<List<Integer>> generateBinaryCluster(List<List<Integer>> columns) {
+        List<List<Integer>> list = new ArrayList<>();
+        for (int i = 0; i < this.numberOfClusters; i++){
+            List<Integer> column = new ArrayList<>();
+            for(int j = 0; j< this.numberOfColumns; j++){
+                column.add(0);
+            }
+            list.add(column);
+        }
+        //System.out.println(list);
+        
+        for (int i = 0; i < this.numberOfClusters; i++) {
+            for(int j = 0; j< this.numberOfColumns; j++){
+//               if(columns.get(i).contains(j)){
+//                   
+//               } 
+            }
+        }
+        return list;
     }
 
 }
