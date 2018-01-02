@@ -23,6 +23,7 @@ public class HierarchicalCluster {
     private List<Cluster> clusters;
     private double[][] similarity;
     private double[][] dissimilarity;
+    private List<List<Integer>> transformationList;
     private int numberOfRows;
     private int numberOfColumns;
 
@@ -84,10 +85,14 @@ public class HierarchicalCluster {
         return similarity;
     }
 
-    public double[][] getdissimilarity() {
+    public double[][] getDissimilarity() {
         return similarity;
     }
 
+    public List<List<Integer>> getTransfomationList() {
+        return transformationList;
+    }
+    
     private List<List<Double>> readData() throws FileNotFoundException, IOException {
         BufferedReader br = new BufferedReader(new FileReader(fileName));
         List<List<Double>> listData = new ArrayList<>();
@@ -281,9 +286,6 @@ public class HierarchicalCluster {
 
             copySquareMatrix(this.similarity, calculateSilimarity(m.getArray()), numberOfColumns);
             calculateDissilimarity();
-            //printSquareMatrix(calculateSilimarity(m.getArray()));
-            printDissimilarity(numberOfColumns - 1);
-            System.out.println();
             Cluster cluster = new Cluster();
             cluster.addPointPositions(indexes);
             this.clusters.add(cluster);
@@ -295,9 +297,7 @@ public class HierarchicalCluster {
 
         }
         columns.forEach(list -> list.sort(Comparator.naturalOrder()));
-        generateBinaryCluster(columns);
-        System.out.println(columns);
-        
+        this.transformationList = generateClusterMatrix(columns);
     }
 
     private void initializeColumnsForCluster(List<List<Integer>> columns) {
@@ -307,23 +307,20 @@ public class HierarchicalCluster {
             columns.add(column);
         }
     }
-    
-    private List<List<Integer>> generateBinaryCluster(List<List<Integer>> columns) {
+
+    private List<List<Integer>> generateClusterMatrix(List<List<Integer>> columns) {
         List<List<Integer>> list = new ArrayList<>();
-        for (int i = 0; i < this.numberOfClusters; i++){
+        for (int i = 0; i < this.numberOfClusters; i++) {
             List<Integer> column = new ArrayList<>();
-            for(int j = 0; j< this.numberOfColumns; j++){
+            for (int j = 0; j < this.numberOfColumns; j++) {
                 column.add(0);
             }
             list.add(column);
         }
-        //System.out.println(list);
-        
+
         for (int i = 0; i < this.numberOfClusters; i++) {
-            for(int j = 0; j< this.numberOfColumns; j++){
-//               if(columns.get(i).contains(j)){
-//                   
-//               } 
+            for (int j = 0; j < columns.get(i).size(); j++) {
+                list.get(i).set(columns.get(i).get(j), 1);
             }
         }
         return list;

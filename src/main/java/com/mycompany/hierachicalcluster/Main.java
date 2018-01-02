@@ -23,5 +23,6 @@ public class Main {
         int numberOfClusters = 4;
         HierarchicalCluster hc = new HierarchicalCluster(path + "/" + file, numberOfClusters);
         hc.reduce();
+        System.out.println(hc.getTransfomationList());
     }
 }
