@@ -3,7 +3,9 @@ package com.mycompany.hierachicalcluster;
 import Jama.Matrix;
 import java.io.*;
 import java.util.*;
+import org.apache.commons.math3.stat.correlation.KendallsCorrelation;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
+import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -26,6 +28,7 @@ public class HierarchicalCluster {
     private List<List<Integer>> transformationList;
     private int numberOfRows;
     private int numberOfColumns;
+    private CorrelationType correlationType;
 
     private class Cluster {
 
@@ -91,6 +94,15 @@ public class HierarchicalCluster {
 
     public List<List<Integer>> getTransfomationList() {
         return transformationList;
+    }
+    
+    public void printTransformationList(){
+        System.out.println(this.transformationList);
+    }
+    
+    public HierarchicalCluster setCorrelation(CorrelationType correlationType){
+        this.correlationType = correlationType;
+        return this;
     }
     
     private List<List<Double>> readData() throws FileNotFoundException, IOException {
@@ -179,6 +191,15 @@ public class HierarchicalCluster {
     }
 
     private void calculateSilimarity() {
+        if(this.correlationType == CorrelationType.PEARSON){
+            PearsonsCorrelation corr = new PearsonsCorrelation(this.data);
+        }else if(this.correlationType == CorrelationType.SPEARMAN){
+            //SpearmansCorrelation corr = new SpearmansCorrelation(this.data);
+        }else if(this.correlationType == CorrelationType.KENDALL){
+            KendallsCorrelation corr = new KendallsCorrelation(this.data);
+        }else{
+            PearsonsCorrelation corr = new PearsonsCorrelation(this.data);
+        }
         PearsonsCorrelation corr = new PearsonsCorrelation(this.data);
         this.similarity = corr.getCorrelationMatrix().getData();
     }
@@ -273,7 +294,7 @@ public class HierarchicalCluster {
         }
     }
 
-    public void reduce() {
+    public HierarchicalCluster reduce() {
         Matrix m = new Matrix(this.data);
         int numberOfColumns = this.numberOfColumns;
         List<List<Integer>> columns = new ArrayList<>();
@@ -298,6 +319,7 @@ public class HierarchicalCluster {
         }
         columns.forEach(list -> list.sort(Comparator.naturalOrder()));
         this.transformationList = generateClusterMatrix(columns);
+        return this;
     }
 
     private void initializeColumnsForCluster(List<List<Integer>> columns) {
