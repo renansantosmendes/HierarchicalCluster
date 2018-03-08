@@ -3,6 +3,7 @@ package com.mycompany.hierachicalcluster;
 import Jama.Matrix;
 import java.io.*;
 import java.util.*;
+import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.stat.correlation.KendallsCorrelation;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
@@ -66,12 +67,8 @@ public class HierarchicalCluster {
         this.numberOfClusters = numberOfClusters;
         this.clusters = new ArrayList<>();
         this.listData = readData();
-
-        createMatrix();
-        calculateSilimarity();
-        calculateDissilimarity();
     }
-
+    
     public List<List<Double>> getListData() {
         return listData;
     }
@@ -193,19 +190,33 @@ public class HierarchicalCluster {
     private void calculateSilimarity() {
         if(this.correlationType == CorrelationType.PEARSON){
             PearsonsCorrelation corr = new PearsonsCorrelation(this.data);
+            this.similarity = corr.getCorrelationMatrix().getData();
         }else if(this.correlationType == CorrelationType.SPEARMAN){
-            //SpearmansCorrelation corr = new SpearmansCorrelation(this.data);
+            SpearmansCorrelation corr = new SpearmansCorrelation();
+            this.similarity = corr.computeCorrelationMatrix(this.data).getData();
         }else if(this.correlationType == CorrelationType.KENDALL){
             KendallsCorrelation corr = new KendallsCorrelation(this.data);
+            this.similarity = corr.getCorrelationMatrix().getData();
         }else{
             PearsonsCorrelation corr = new PearsonsCorrelation(this.data);
+            this.similarity = corr.getCorrelationMatrix().getData();
         }
-        PearsonsCorrelation corr = new PearsonsCorrelation(this.data);
-        this.similarity = corr.getCorrelationMatrix().getData();
     }
 
     private double[][] calculateSilimarity(double[][] data) {
-        return new PearsonsCorrelation(data).getCorrelationMatrix().getData();
+        if(this.correlationType == CorrelationType.PEARSON){
+            PearsonsCorrelation corr = new PearsonsCorrelation(data);
+            return corr.getCorrelationMatrix().getData();
+        }else if(this.correlationType == CorrelationType.SPEARMAN){
+            SpearmansCorrelation corr = new SpearmansCorrelation();
+            return corr.computeCorrelationMatrix(data).getData();
+        }else if(this.correlationType == CorrelationType.KENDALL){
+            KendallsCorrelation corr = new KendallsCorrelation(data);
+            return corr.getCorrelationMatrix().getData();
+        }else{
+            PearsonsCorrelation corr = new PearsonsCorrelation(data);
+            return corr.getCorrelationMatrix().getData();
+        }
     }
 
     public void printSquareMatrix(double[][] matrix) {
@@ -295,6 +306,11 @@ public class HierarchicalCluster {
     }
 
     public HierarchicalCluster reduce() {
+        createMatrix();
+        calculateSilimarity();
+        this.printSimilarity();
+        calculateDissilimarity();
+        
         Matrix m = new Matrix(this.data);
         int numberOfColumns = this.numberOfColumns;
         List<List<Integer>> columns = new ArrayList<>();
